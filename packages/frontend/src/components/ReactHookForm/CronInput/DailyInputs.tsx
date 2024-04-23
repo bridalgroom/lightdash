@@ -1,13 +1,14 @@
 import { Group, Input } from '@mantine/core';
-import React, { type FC } from 'react';
+import React, { type FC, type ReactNode } from 'react';
 import { getDailyCronExpression } from './cronInputUtils';
 import TimePicker from './TimePicker';
 
 const DailyInputs: FC<{
     disabled?: boolean;
     cronExpression: string;
+    timeZone: ReactNode;
     onChange: (value: string) => void;
-}> = ({ disabled, cronExpression, onChange }) => {
+}> = ({ disabled, cronExpression, onChange, timeZone: Timezone }) => {
     const handleChange = (newTime: { hours: number; minutes: number }) => {
         onChange(getDailyCronExpression(newTime.minutes, newTime.hours));
     };
@@ -20,7 +21,7 @@ const DailyInputs: FC<{
                 cronExpression={cronExpression}
                 onChange={handleChange}
             />
-            <Input.Label>UTC</Input.Label>
+            {Timezone}
         </Group>
     );
 };

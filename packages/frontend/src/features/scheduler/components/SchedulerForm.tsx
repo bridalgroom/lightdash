@@ -53,6 +53,7 @@ import FilterNumberInput from '../../../components/common/Filters/FilterInputs/F
 import MantineIcon from '../../../components/common/MantineIcon';
 import { TagInput } from '../../../components/common/TagInput/TagInput';
 import { CronInternalInputs } from '../../../components/ReactHookForm/CronInput';
+import TimezoneSelect from '../../../components/ReactHookForm/CronInput/TimezoneSelect';
 import { hasRequiredScopes } from '../../../components/UserSettings/SlackSettingsPanel';
 import { useDashboardQuery } from '../../../hooks/dashboard/useDashboard';
 import useHealth from '../../../hooks/health/useHealth';
@@ -86,6 +87,7 @@ const DEFAULT_VALUES = {
     message: '',
     format: SchedulerFormat.CSV,
     cron: '0 9 * * 1',
+    timezone: 'UTC',
     options: {
         formatted: Values.FORMATTED,
         limit: Limit.TABLE,
@@ -158,6 +160,7 @@ const getFormValuesFromScheduler = (schedulerData: SchedulerAndTargets) => {
         message: schedulerData.message,
         format: schedulerData.format,
         cron: schedulerData.cron,
+        timezone: schedulerData.timezone,
         options: formOptions,
         emailTargets: emailTargets,
         slackTargets: slackTargets,
@@ -298,6 +301,7 @@ const SchedulerForm: FC<Props> = ({
                 message: values.message,
                 format: values.format,
                 cron: values.cron,
+                timezone: values.timezone,
                 options,
                 targets,
                 ...(resource?.type === 'dashboard' && {
@@ -586,6 +590,12 @@ const SchedulerForm: FC<Props> = ({
                                     {...form.getInputProps('cron')}
                                     value={form.values.cron}
                                     name="cron"
+                                    timeZone={
+                                        <TimezoneSelect
+                                            disabled={disabled}
+                                            {...form.getInputProps('timezone')}
+                                        />
+                                    }
                                 />
                             </Box>
                         </Input.Wrapper>
