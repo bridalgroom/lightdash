@@ -14,9 +14,9 @@ import {
 } from '@mantine/core';
 import {
     IconChartArea,
-    IconChartAreaLine,
     IconChartBar,
     IconChartDots,
+    IconChartHistogram,
     IconChartLine,
     IconChartPie,
     IconCode,
@@ -80,7 +80,7 @@ export const getChartIcon = (chartKind: ChartKind | undefined) => {
         case ChartKind.AREA:
             return IconChartArea;
         case ChartKind.MIXED:
-            return IconChartAreaLine;
+            return IconChartHistogram;
         case ChartKind.PIE:
             return IconChartPie;
         case ChartKind.TABLE:
@@ -97,12 +97,13 @@ export const getChartIcon = (chartKind: ChartKind | undefined) => {
     }
 };
 
-export const ChartIcon: FC<{ chartKind: ChartKind | undefined }> = ({
-    chartKind,
-}) => (
+export const ChartIcon: FC<{
+    chartKind: ChartKind | undefined;
+    color?: string;
+}> = ({ chartKind, color = 'blue.8' }) => (
     <IconBox
         icon={getChartIcon(chartKind)}
-        color="blue.8"
+        color={color}
         transform={
             chartKind === ChartKind.HORIZONTAL_BAR ? 'rotate(90)' : undefined
         }

@@ -1,11 +1,12 @@
-import { MantineProvider, Tabs } from '@mantine/core';
+import { Accordion } from '@mantine/core';
 import { memo, useMemo, type FC } from 'react';
 import { useVisualizationContext } from '../../../LightdashVisualization/VisualizationProvider';
-import { themeOverride } from '../../mantineTheme';
+import { getAccordionConfigTabsStyles } from '../../mantineTheme';
 import { Axes } from '../Axes';
 import { Grid } from '../Grid';
 import { Layout } from '../Layout';
 import { Legend } from '../Legend';
+import { ReferenceLines } from '../ReferenceLines/ReferenceLines';
 import { Series } from '../Series';
 
 export const ConfigTabs: FC = memo(() => {
@@ -14,41 +15,47 @@ export const ConfigTabs: FC = memo(() => {
     const items = useMemo(() => Object.values(itemsMap || {}), [itemsMap]);
 
     return (
-        <MantineProvider inherit theme={themeOverride}>
-            <Tabs defaultValue="layout" keepMounted={false}>
-                <Tabs.List mb="sm">
-                    <Tabs.Tab px="sm" value="layout">
-                        Layout
-                    </Tabs.Tab>
-                    <Tabs.Tab px="sm" value="series">
-                        Series
-                    </Tabs.Tab>
-                    <Tabs.Tab px="sm" value="axes">
-                        Axes
-                    </Tabs.Tab>
-                    <Tabs.Tab px="sm" value="legend">
-                        Display
-                    </Tabs.Tab>
-                    <Tabs.Tab px="sm" value="grid">
-                        Margins
-                    </Tabs.Tab>
-                </Tabs.List>
-                <Tabs.Panel value="layout">
+        <Accordion
+            radius="none"
+            styles={getAccordionConfigTabsStyles}
+            defaultValue="layout"
+        >
+            <Accordion.Item value="layout">
+                <Accordion.Control>Layout</Accordion.Control>
+                <Accordion.Panel>
                     <Layout items={items} />
-                </Tabs.Panel>
-                <Tabs.Panel value="series">
+                </Accordion.Panel>
+            </Accordion.Item>
+            <Accordion.Item value="series">
+                <Accordion.Control>Series</Accordion.Control>
+                <Accordion.Panel>
                     <Series items={items} />
-                </Tabs.Panel>
-                <Tabs.Panel value="axes">
+                </Accordion.Panel>
+            </Accordion.Item>
+            <Accordion.Item value="axes">
+                <Accordion.Control>Axes</Accordion.Control>
+                <Accordion.Panel>
                     <Axes itemsMap={itemsMap} />
-                </Tabs.Panel>
-                <Tabs.Panel value="legend">
-                    <Legend items={items} />
-                </Tabs.Panel>
-                <Tabs.Panel value="grid">
+                </Accordion.Panel>
+            </Accordion.Item>
+            <Accordion.Item value="legend">
+                <Accordion.Control>Legend</Accordion.Control>
+                <Accordion.Panel>
+                    <Legend />
+                </Accordion.Panel>
+            </Accordion.Item>
+            <Accordion.Item value="reference-lines">
+                <Accordion.Control>Reference Lines</Accordion.Control>
+                <Accordion.Panel>
+                    <ReferenceLines items={items} />
+                </Accordion.Panel>
+            </Accordion.Item>
+            <Accordion.Item value="grid">
+                <Accordion.Control>Margin</Accordion.Control>
+                <Accordion.Panel>
                     <Grid />
-                </Tabs.Panel>
-            </Tabs>
-        </MantineProvider>
+                </Accordion.Panel>
+            </Accordion.Item>
+        </Accordion>
     );
 });

@@ -3,7 +3,14 @@ import {
     ChartType,
     type SavedChart,
 } from '@lightdash/common';
-import { Button, Drawer, Group, Text } from '@mantine/core';
+import {
+    Button,
+    Drawer,
+    Group,
+    MantineProvider,
+    Text,
+    type DrawerProps,
+} from '@mantine/core';
 import {
     IconLayoutSidebarLeftCollapse,
     IconLayoutSidebarLeftExpand,
@@ -15,19 +22,29 @@ import { BANNER_HEIGHT, NAVBAR_HEIGHT } from '../../NavBar';
 import { ConfigTabs as BigNumberConfigTabs } from '../../VisualizationConfigs/BigNumberConfig/BigNumberConfigTabs';
 import { ConfigTabs as ChartConfigTabs } from '../../VisualizationConfigs/ChartConfigPanel/ConfigTabs';
 import CustomVisConfigTabs from '../../VisualizationConfigs/ChartConfigPanel/CustomVisConfigTabs';
+import { themeOverride } from '../../VisualizationConfigs/mantineTheme';
 import { ConfigTabs as PieChartConfigTabs } from '../../VisualizationConfigs/PieChartConfig/PieChartConfigTabs';
 import { ConfigTabs as TableConfigTabs } from '../../VisualizationConfigs/TableConfigPanel/TableConfigTabs';
 import VisualizationCardOptions from '../VisualizationCardOptions';
 
-const VisualizationSidebar: FC<{
-    chartType: ChartType;
-    savedChart?: SavedChart;
-    isProjectPreview?: boolean;
-    isOpen: boolean;
-    onClose: () => void;
-    onOpen: () => void;
-}> = memo(
-    ({ chartType, savedChart, isProjectPreview, isOpen, onOpen, onClose }) => {
+const VisualizationSidebar: FC<
+    {
+        isConfigurable: boolean;
+        chartType: ChartType;
+        savedChart?: SavedChart;
+        isProjectPreview?: boolean;
+        onOpen: () => void;
+    } & Pick<DrawerProps, 'opened' | 'onClose'>
+> = memo(
+    ({
+        isConfigurable,
+        chartType,
+        savedChart,
+        isProjectPreview,
+        opened,
+        onOpen,
+        onClose,
+    }) => {
         const sidebarVerticalOffset = useMemo(() => {
             let offset = NAVBAR_HEIGHT;
 
@@ -65,31 +82,37 @@ const VisualizationSidebar: FC<{
 
         return (
             <>
-                <Button
-                    {...COLLAPSABLE_CARD_BUTTON_PROPS}
-                    onClick={isOpen ? onClose : onOpen}
-                    rightIcon={
-                        <MantineIcon
-                            color="gray"
-                            icon={
-                                isOpen
-                                    ? IconLayoutSidebarLeftCollapse
-                                    : IconLayoutSidebarLeftExpand
-                            }
-                        />
-                    }
-                >
-                    {isOpen ? 'Close configure' : 'Configure'}
-                </Button>
+                {isConfigurable && (
+                    <Button
+                        {...COLLAPSABLE_CARD_BUTTON_PROPS}
+                        onClick={opened ? onClose : onOpen}
+                        rightIcon={
+                            <MantineIcon
+                                color="gray"
+                                icon={
+                                    opened
+                                        ? IconLayoutSidebarLeftCollapse
+                                        : IconLayoutSidebarLeftExpand
+                                }
+                            />
+                        }
+                    >
+                        {opened ? 'Close configure' : 'Configure'}
+                    </Button>
+                )}
 
                 <Drawer
-                    title={<Text fw={600}>Configure chart</Text>}
+                    title={
+                        <Text fz="sm" fw={600}>
+                            Chart builder
+                        </Text>
+                    }
                     zIndex={100}
-                    opened={isOpen}
+                    opened={opened}
                     withOverlay={false}
                     lockScroll={false}
                     shadow="lg"
-                    size={410}
+                    size={400}
                     styles={(theme) => ({
                         inner: {
                             top: sidebarVerticalOffset,
@@ -100,24 +123,27 @@ const VisualizationSidebar: FC<{
                             flexDirection: 'column',
                         },
                         header: {
-                            borderBottom: `1px solid ${theme.colors.gray[4]}`,
-                            borderTop: `1px solid ${theme.colors.gray[2]}`,
+                            paddingBottom: theme.spacing.sm,
+                            marginBottom: theme.spacing.xs,
                             flexShrink: 0,
                         },
                         body: {
                             flexGrow: 1,
                             display: 'flex',
                             flexDirection: 'column',
+                            padding: 0,
+                            paddingTop: theme.spacing.xs,
                         },
                     })}
                     onClose={onClose}
                 >
-                    <Group py="lg">
-                        <Text fw={600}>Chart type</Text>
+                    <Group p="sm" pt={0} pl="md">
                         <VisualizationCardOptions />
                     </Group>
 
-                    <ConfigTab />
+                    <MantineProvider inherit theme={themeOverride}>
+                        <ConfigTab />
+                    </MantineProvider>
                 </Drawer>
             </>
         );
