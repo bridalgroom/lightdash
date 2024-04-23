@@ -133,7 +133,7 @@ export const useQueryResults = (props?: {
             ]);
             const isValidQuery = fields.size > 0;
             if (!!tableName && isValidQuery) {
-                await mutateAsync({
+                return mutateAsync({
                     projectUuid,
                     tableId: tableName,
                     query: metricQuery,
