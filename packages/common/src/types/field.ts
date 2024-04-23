@@ -123,12 +123,20 @@ export enum CustomFormatType {
     ID = 'id',
 }
 
+export enum TableCalculationType {
+    NUMBER = 'number',
+    STRING = 'string',
+    DATE = 'date',
+    TIMESTAMP = 'timestamp',
+    BOOLEAN = 'boolean',
+}
 export type TableCalculation = {
     index?: number;
     name: string;
     displayName: string;
     sql: string;
     format?: CustomFormat;
+    type?: TableCalculationType;
 };
 
 export type TableCalculationMetadata = {
@@ -138,7 +146,7 @@ export type TableCalculationMetadata = {
 
 export interface TableCalculationField extends Field {
     fieldType: FieldType.TABLE_CALCULATION;
-    type: CustomFormatType;
+    type: TableCalculationType;
     index?: number;
     name: string;
     displayName: string;
@@ -151,7 +159,7 @@ export const isTableCalculation = (
     item
         ? !('binType' in item) &&
           !!item.sql &&
-          !('type' in item) &&
+          !('description' in item) &&
           !('tableName' in item)
         : false;
 
